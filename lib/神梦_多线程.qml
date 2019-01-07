@@ -6,8 +6,8 @@ MacroID=652ab43d-d143-47d0-819d-61745b09cade
 [Script]
 '======================================[需要脚本定制可以找我]======================================
 '【神梦多线程命令库】
-'版本：v1.0
-'更新：2018.12.31
+'版本：v1.1
+'更新：2018.01.07
 '作者：神梦无痕
 'ＱＱ：1042207232
 'Ｑ群：624655641
@@ -61,21 +61,99 @@ Declare Function WaitForSingleObject Lib "kernel32" Alias "WaitForSingleObject" 
 '互斥锁退出
 Declare Function ReleaseMutex Lib "kernel32" Alias "ReleaseMutex" (ByVal hMutex As Long)
 '
-'创建一个 Event事件对象
+'
+'创建一个 Event事件对象（跨进程）
 Declare Function CreateEvent Lib  "kernel32.dll" Alias  "CreateEventW"(ByVal 安全性结构 As Any,ByVal 人工或自动事件 As Long,ByVal 是否内部触发 As Long,ByVal 事件对象名 As String) As Long
 '等待并进入/拥有这个Event事件对象
 Declare Function WaitForSingleObject Lib  "kernel32.dll" Alias  "WaitForSingleObject"(ByVal hObjcte As Any,ByVal Time As Long) As Long
 '将Event事件对象设置为发信号状态，触发状态
 Declare Function SetEvent Lib  "kernel32.dll" Alias  "SetEvent"(ByVal hObjcte As Any) As Long
+'将Event事件对象设置为无信号状态，重置/非触发状态。
+Declare Function ResetEvent Lib  "kernel32.dll" Alias  "ResetEvent"(ByVal hObjcte As Any) As Long
+'
+'
+Declare Function CreateEventLong Lib  "kernel32.dll" Alias  "CreateEventW"(ByVal 安全性结构 As Any,ByVal 人工或自动事件 As Long,ByVal 是否内部触发 As Long,ByVal 事件对象名 As Long) As Long
 '
 '关闭一个内核对象。其中包括文件、文件映射、进程、线程、安全和同步对象等。
 Declare Function CloseHandle Lib "kernel32" Alias "CloseHandle" (ByVal hObject As Long) As Long
 
 '用于获取自windows启动以来经历的时间长度（毫秒）
 Declare Function GetTickCount Lib "kernel32" () As Long
+
+'获取当前线程一个唯一的线程标识符
+Declare Function GetCurrentThreadId Lib "kernel32" Alias "GetCurrentThreadId" () As Long
+
+'用于打开一个现有线程对象
+Declare Function OpenThread Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwThreadId As Long) As Long
+
+'挂起线程 暂停操作 可以用 “恢复” 来继续执行
+Declare Function SuspendThread Lib "kernel32" Alias "SuspendThread" (ByVal hThread As Long) As Long
+
+'恢复继续运行被挂起的线程
+Declare Function ResumeThread Lib "kernel32" Alias "ResumeThread" (ByVal hThread As Long) As Long
+
+'强制结束线程。(不推荐使用)
+Declare Function TerminateThread Lib "kernel32" (ByVal hThread As Long, ByVal dwExitCode As Long) As Long
+
+'获取线程优先级
+Declare Function GetThreadPriority Lib "kernel32" Alias "GetThreadPriority" (ByVal hThread As Long) As Long
+
+'设置线程优先级
+Declare Function SetThreadPriority Lib "kernel32" Alias "SetThreadPriority" (ByVal hThread As Long, ByVal nPriority As Long) As Long
+
+'设置CPU亲和性/绑定CPU
+Declare Function SetProcessAffinityMask Lib "kernel32.dll" (ByVal hProcess As Long, ByVal dwProcessAffinityMask As Long) As Long
 '
 '
-'--------[互斥锁]--------
+'--------------------------------[定义变量]--------------------------------
+DimEnv DimEnv_原子句柄
+'
+'--------------------------------[原子锁]--------------------------------
+Sub 原子_初始化()
+	DimEnv_原子句柄 = CreateEventLong(0, 0, 1, 0)
+End Sub
+Sub 原子_销毁()
+	Call CloseHandle(DimEnv_原子句柄)
+End Sub
+Sub 原子_递增(变量名)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	SetEnv 变量名, GetEnv(变量名) + 1
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_递减(变量名)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	SetEnv 变量名, GetEnv(变量名) - 1
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_赋值(变量名, 数值)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	SetEnv 变量名, 数值
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_交换(变量名, 交换变量名)
+	Dim Temp
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	Temp = GetEnv(变量名)
+	SetEnv 变量名, GetEnv(交换变量名)
+	SetEnv 交换变量名, Temp
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_运算(变量名, 数值)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	SetEnv 变量名, GetEnv(变量名) + 数值
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_三目运算(变量名, 赋值, 对比值)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	If GetEnv(变量名) = 对比值 Then 
+		SetEnv 变量名, 赋值
+	End If
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+'
+'
+'
+'--------------------------------[互斥锁]--------------------------------
 Function 互斥锁创建()
 	Dim 锁标识, i
 	锁标识 = "互斥锁_神梦无痕_QQ：1042207232_由【果兒】提供_"
@@ -92,7 +170,41 @@ Sub 互斥锁销毁(锁句柄)
     Call CloseHandle(锁句柄)
 End Sub
 '
-'--------[自旋锁]--------
+'--------------------------------[临界区]--------------------------------
+Function 临界区创建()
+	Dim 许可标识, i
+	许可标识 = "临界许可_神梦无痕_QQ：1042207232_许可证_"
+	For i = 0 To 12 : Randomize :许可标识 = 许可标识 & Chr((24 * Rnd) + 65) :Next
+    临界区创建 = CreateEvent(0, 0, 1, 许可标识)
+End Function
+Sub 临界区进入(许可证)
+    Call WaitForSingleObject(许可证, 4294967295)
+End Sub
+Sub 临界区退出(许可证)
+    Call SetEvent(许可证)
+End Sub
+Sub 临界区销毁(许可证)
+    Call CloseHandle(许可证)
+End Sub
+'
+'--------------------------------[事件]--------------------------------
+Function 事件创建()
+	Dim 事件标识, i
+	事件标识 = "事件_神梦无痕_QQ：1042207232_由【风__琪仙】提供_"
+	For i = 0 To 12 : Randomize :事件标识 = 事件标识 & Chr((24 * Rnd) + 65) :Next
+    事件创建 = CreateEvent(0, 0, 1, 事件标识)
+End Function
+Sub 事件进入(事件句柄)
+    Call WaitForSingleObject(事件句柄, 4294967295)
+End Sub
+Sub 事件退出(事件句柄)
+    Call SetEvent(事件句柄)
+End Sub
+Sub 事件销毁(事件句柄)
+    Call CloseHandle(事件句柄)
+End Sub
+'
+'--------------------------------[自旋锁]--------------------------------
 Function 自旋锁创建()
     自旋锁创建 = GetThreadID() & Int(GetTickCount() * Rnd)
 End Function
@@ -123,46 +235,185 @@ Sub 自旋锁退出(锁句柄)
     SetEnv 锁状态标识, False
 End Sub
 '
-'--------[信号量]--------*按键精灵里不支持该命令*
-//Function 信号量创建(并发上限)
-//	Dim 信号标识, i, Ret
-//	信号标识 = "信号量_神梦无痕_QQ：1042207232_"
-//	For i = 0 To 12 : Randomize :信号标识 = 信号标识 & Chr((24 * Rnd) + 65) :Next
-//	If IsNumeric(CStr(并发上限)) = False Or 并发上限 = "0" Then 并发上限 = 1
-//	Ret = CreateSemaphore(0, 0, CLng(并发上限), 信号标识)
-//	SetEnv Ret, 信号标识
-//	信号量创建 = Ret
-//End Function
-//Function 信号量打开(信号句柄)
-//	信号量打开 = OpenSemaphore(2031619, True, GetEnv(信号句柄))
-//End Function
-//Sub 信号量递减(信号句柄)
-//	Call WaitForSingleObject(信号句柄, 4294967295)
-//End Sub
-//Sub 信号量递增(信号句柄)
-//	返回递增前的值 = 0
-//	Call ReleaseSemaphore(信号句柄, 1, CLng(返回递增前的值))
-//End Sub
-//Sub 信号量销毁(信号句柄)
-//	Call CloseHandle(信号句柄)
-//End Sub 
 '
-'--------[事件]--------
-Function 事件创建()
-	Dim 事件标识, i
-	事件标识 = "事件_神梦无痕_QQ：1042207232_由【风__琪仙】提供_"
-	For i = 0 To 12 : Randomize :事件标识 = 事件标识 & Chr((24 * Rnd) + 65) :Next
-    事件创建 = CreateEvent(0, 0, 1, 事件标识)
+'--------------------------------[信号量]--------------------------------
+/*【描述】（空闲线程 --> 空车位）
+以一个停车场的运作为例。简单起见，假设停车场只有三个车位【并发上限】， 
+一开始三个车位都是空的【空闲线程】。这时如果同时来了五辆车，看门人允许其中三辆直接进入【空闲线程-3】， 
+然后放下车拦【信号量等待】，剩下的车则必须在入口等待，此后来的车也都不得不在入口处等待。 
+这时，有一辆车离开停车场【空闲线程+1】，看门人得知后，打开车拦【信号量释放】，放入外面的一辆进去【空闲线程-1】，
+如果又离开两辆【空闲线程+2】，则又可以放入两辆【空闲线程-2】，如此往复。 
+
+在这个停车场系统中，车位是公共资源，每辆车好比一个线程，看门人起的就是信号量的作用。
+*/
+Function 信号量创建(并发上限)
+	Dim 信号标识, i, Ret, 标识_空闲线程, 标识_并发上限
+	信号标识 = "信号量_神梦无痕_QQ：1042207232_"
+	For i = 0 To 12 : Randomize :信号标识 = 信号标识 & Chr((24 * Rnd) + 65) :Next
+	If IsNumeric(CStr(并发上限)) = False Or 并发上限 = "0" Then 并发上限 = 1
+	Ret = CreateEvent(0, 0, 1, 信号标识)
+	标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & Ret
+	标识_并发上限 = "信号量_神梦无痕_QQ：1042207232_并发上限_" & Ret
+	SetEnv 标识_空闲线程, 并发上限
+	SetEnv 标识_并发上限, 并发上限
+	信号量创建 = Ret
 End Function
-Sub 事件进入(事件句柄)
-    Call WaitForSingleObject(事件句柄, 4294967295)
+Function 信号量是否空闲(信号句柄)
+	Dim 标识_空闲线程, 标识_并发上限
+	标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & 信号句柄
+	标识_并发上限 = "信号量_神梦无痕_QQ：1042207232_并发上限_" & 信号句柄
+	信号量是否空闲 = (GetEnv(标识_空闲线程) = GetEnv(标识_并发上限))
+End Function 
+Sub 信号量等待(信号句柄)
+	Dim 标识_空闲线程
+	标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & 信号句柄
+	Call WaitForSingleObject(信号句柄, 4294967295)
+	While GetEnv(标识_空闲线程) = 0
+		'判断是否有空闲线程
+	Wend
+	SetEnv 标识_空闲线程, GetEnv(标识_空闲线程) - 1
+	If GetEnv(标识_空闲线程) <> 0 Then Call SetEvent(信号句柄)
+	Dim_ThreadID = GetThreadID()
 End Sub
-Sub 事件退出(事件句柄)
-    Call SetEvent(事件句柄)
+Sub 信号量释放(信号句柄)
+	Dim 标识_空闲线程, 标识_并发上限
+	If Dim_ThreadID = GetThreadID() Then '判断是否在同一线程内
+		标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & 信号句柄
+		标识_并发上限 = "信号量_神梦无痕_QQ：1042207232_并发上限_" & 信号句柄
+		If GetEnv(标识_并发上限) > GetEnv(标识_空闲线程) Then
+			SetEnv 标识_空闲线程, GetEnv(标识_空闲线程) + 1
+		End If
+		Call SetEvent(信号句柄)
+	End If 
 End Sub
-Sub 事件销毁(事件句柄)
-    Call CloseHandle(事件句柄)
+Sub 信号量销毁(信号句柄)
+	Call CloseHandle(信号句柄)
+End Sub 
+'
+'--------------------------------[读写锁]--------------------------------
+Function 读写锁创建()
+	Dim 标识_读取锁, 标识_写入锁, Ret
+    Ret = CreateEventLong(0, 0, 1, 0)
+	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & Ret
+	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & Ret
+	SetEnv 标识_写入锁, CreateEvent(0, 1, 1, 标识_写入锁)
+	SetEnv 标识_读取锁, CreateMutex(0, false, 标识_读取锁)
+	SetEnv Ret, 0
+	读写锁创建 = Ret
+End Function
+Sub 读写锁读锁定(读写句柄)
+	Dim 标识_读取锁, 标识_写入锁, code, Ret
+	Ret = False 
+	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & 读写句柄
+	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & 读写句柄
+	code = WaitForSingleObject(GetEnv(标识_读取锁), 4294967295)
+	If code = 258 Then 
+		Goto over
+	End If
+	Call WaitForSingleObject(读写句柄, 4294967295) '原子锁锁定
+		SetEnv 读写句柄, GetEnv(读写句柄) + 1
+		If GetEnv(读写句柄) = 1 Then 
+			Call ResetEvent(GetEnv(标识_写入锁))
+		End If
+	Call SetEvent(读写句柄) '原子锁解锁
+	Call ReleaseMutex(GetEnv(标识_读取锁))
+	Ret = True 
+	Rem over
+	读写锁读锁定 = Ret
 End Sub
+Sub 读写锁写锁定(读写句柄)
+	Dim 标识_读取锁, 标识_写入锁, code, Ret
+	Ret = False 
+	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & 读写句柄
+	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & 读写句柄
+	code = WaitForSingleObject(GetEnv(标识_读取锁), 4294967295)
+	If code = 258 Then 
+		Goto over
+	End If
+	code = WaitForSingleObject(GetEnv(标识_写入锁), 4294967295)
+	If code = 258 Then 
+		Call ReleaseMutex(GetEnv(标识_写入锁))
+		Goto over
+	End If
+	Ret = True
+	Rem over
+	读写锁写锁定 = Ret
+End Sub
+Sub 读写锁解锁(读写句柄)
+	Dim 标识_读取锁, 标识_写入锁, code
+	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & 读写句柄
+	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & 读写句柄
+	If ReleaseMutex(GetEnv(标识_读取锁)) = 0 Then 
+		Call WaitForSingleObject(读写句柄, 4294967295) '原子锁锁定
+			SetEnv 读写句柄, GetEnv(读写句柄) - 1
+			If GetEnv(读写句柄) = 0 Then 
+				Call SetEvent(GetEnv(标识_写入锁)) 
+			End If
+		Call SetEvent(读写句柄) '原子锁解锁
+	End If
+End Sub
+Sub 读写锁销毁(读写句柄)
+	Dim 标识_读取锁, 标识_写入锁
+	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & 读写句柄
+	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & 读写句柄
+	Call CloseHandle(GetEnv(标识_读取锁))
+	Call CloseHandle(GetEnv(标识_写入锁))
+	Call CloseHandle(读写句柄)
+End Sub 
+'
+'
+'
+'--------------------------------[线程]--------------------------------
+'通过线程ID获取线程句柄
+//Function 线程_取线程句柄(线程ID)
+//    线程_取线程句柄 = OpenThread(&H1F0FFF, 0, 线程ID)
+//End Function
+'
+'获取当前线程句柄
+Function 线程_取当前ID()
+    线程_取当前句柄 = GetThreadID()  //OpenThread(&H1F0FFF, 0, GetCurrentThreadId())
+End Function
+'
+'强制结束线程
+Function 线程_结束(线程ID)
+    线程_结束 = StopThread(线程ID)  //TerminateThread(线程句柄, 0)
+End Function
+
+'最低=-15；低=-2；低于标准=-1；标准=0；高于标准=1；高=2；最高=15
+Sub 线程_置优先级(线程ID, 级别)
+    Call SetThreadPriority(OpenThread(&H1F0FFF, 0, CLng(线程ID)), CLng(级别))
+End Sub
+
+Function 线程_取优先级(线程ID)
+    线程_取优先级 = GetThreadPriority(OpenThread(&H1F0FFF, 0, CLng(线程ID)))
+End Function
+
+Function 线程_恢复(线程ID)
+    线程_恢复 = ContinueThread(线程ID) //ResumeThread(线程句柄)
+End Function
+
+Function 线程_挂起(线程ID)
+    线程_挂起 = PauseThread(线程ID) //SuspendThread(线程句柄)
+End Function
+
+'0=线程已结束  1=线程正在运行  -1=线程句柄已失效或销毁
+Function 线程_取状态(线程ID)
+	Dim Ret, 线程句柄
+	Ret = -1
+	线程句柄 = OpenThread(&H1F0FFF, 0, CLng(线程ID))
+	If IsNumeric(CStr(线程句柄)) = False Or 线程句柄 = "0" Then Goto over
+	Ret = WaitForSingleObject(线程句柄, 0)
+	If Ret = 258 Then 
+		Ret = 1
+	ElseIf Ret = -1 Then
+	 	Ret = -1
+	Else 
+		Ret = 0
+	End If
+	Rem over
+	线程_取状态 = Ret
+End Function
+'
 '
 Sub A_______________________________________()
 End Sub

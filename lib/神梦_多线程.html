@@ -53,6 +53,256 @@
 
 <table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
 <tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='读写锁创建'></a>读写锁创建 
+</td></tr><tr><th>命令功能：</th><td>
+创建读写锁。成功返回读写锁指针。失败返回0
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+整数型，对象句柄
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_读写锁创建" class="vb" id="code8_读写锁创建">
+DimEnv 读写句柄, 多线程_计数
+
+多线程_计数 = 0
+读写句柄 = Lib.神梦_多线程.读写锁创建()
+BeginThread 多线程_读
+BeginThread 多线程_写
+Do
+    Delay 3000
+Loop
+
+
+Sub 多线程_读()
+    Do
+        Call Lib.神梦_多线程.读写锁读锁定(读写句柄)
+        TracePrint 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 300
+    Loop 
+End Sub
+Sub 多线程_写()
+    Do
+        Call Lib.神梦_多线程.读写锁写锁定(读写句柄)
+        多线程_计数 = 多线程_计数 + 1
+        TracePrint "【写入】：" & 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 1000
+    Loop 
+End Sub
+
+
+//以下是当脚本【全部停止时】产生的事件   
+Sub OnScriptExit()   
+    Call Lib.神梦_多线程.读写锁销毁(读写句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='读写锁读锁定'></a>读写锁读锁定 
+</td></tr><tr><th>命令功能：</th><td>
+进入读锁。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_读写锁读锁定" class="vb" id="code8_读写锁读锁定">
+DimEnv 读写句柄, 多线程_计数
+
+多线程_计数 = 0
+读写句柄 = Lib.神梦_多线程.读写锁创建()
+BeginThread 多线程_读
+BeginThread 多线程_写
+Do
+    Delay 3000
+Loop
+
+
+Sub 多线程_读()
+    Do
+        Call Lib.神梦_多线程.读写锁读锁定(读写句柄)
+        TracePrint 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 300
+    Loop 
+End Sub
+Sub 多线程_写()
+    Do
+        Call Lib.神梦_多线程.读写锁写锁定(读写句柄)
+        多线程_计数 = 多线程_计数 + 1
+        TracePrint "【写入】：" & 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 1000
+    Loop 
+End Sub
+
+
+//以下是当脚本【全部停止时】产生的事件   
+Sub OnScriptExit()   
+    Call Lib.神梦_多线程.读写锁销毁(读写句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='读写锁解锁'></a>读写锁解锁 
+</td></tr><tr><th>命令功能：</th><td>
+退出读/写锁。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_读写锁解锁" class="vb" id="code8_读写锁解锁">
+DimEnv 读写句柄, 多线程_计数
+
+多线程_计数 = 0
+读写句柄 = Lib.神梦_多线程.读写锁创建()
+BeginThread 多线程_读
+BeginThread 多线程_写
+Do
+    Delay 3000
+Loop
+
+
+Sub 多线程_读()
+    Do
+        Call Lib.神梦_多线程.读写锁读锁定(读写句柄)
+        TracePrint 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 300
+    Loop 
+End Sub
+Sub 多线程_写()
+    Do
+        Call Lib.神梦_多线程.读写锁写锁定(读写句柄)
+        多线程_计数 = 多线程_计数 + 1
+        TracePrint "【写入】：" & 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 1000
+    Loop 
+End Sub
+
+
+//以下是当脚本【全部停止时】产生的事件   
+Sub OnScriptExit()   
+    Call Lib.神梦_多线程.读写锁销毁(读写句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='读写锁销毁'></a>读写锁销毁 
+</td></tr><tr><th>命令功能：</th><td>
+销毁读写锁。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_读写锁销毁" class="vb" id="code8_读写锁销毁">
+DimEnv 读写句柄, 多线程_计数
+
+多线程_计数 = 0
+读写句柄 = Lib.神梦_多线程.读写锁创建()
+BeginThread 多线程_读
+BeginThread 多线程_写
+Do
+    Delay 3000
+Loop
+
+
+Sub 多线程_读()
+    Do
+        Call Lib.神梦_多线程.读写锁读锁定(读写句柄)
+        TracePrint 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 300
+    Loop 
+End Sub
+Sub 多线程_写()
+    Do
+        Call Lib.神梦_多线程.读写锁写锁定(读写句柄)
+        多线程_计数 = 多线程_计数 + 1
+        TracePrint "【写入】：" & 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 1000
+    Loop 
+End Sub
+
+
+//以下是当脚本【全部停止时】产生的事件   
+Sub OnScriptExit()   
+    Call Lib.神梦_多线程.读写锁销毁(读写句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='读写锁写锁定'></a>读写锁写锁定 
+</td></tr><tr><th>命令功能：</th><td>
+进入写锁。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_读写锁写锁定" class="vb" id="code8_读写锁写锁定">
+DimEnv 读写句柄, 多线程_计数
+
+多线程_计数 = 0
+读写句柄 = Lib.神梦_多线程.读写锁创建()
+BeginThread 多线程_读
+BeginThread 多线程_写
+Do
+    Delay 3000
+Loop
+
+
+Sub 多线程_读()
+    Do
+        Call Lib.神梦_多线程.读写锁读锁定(读写句柄)
+        TracePrint 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 300
+    Loop 
+End Sub
+Sub 多线程_写()
+    Do
+        Call Lib.神梦_多线程.读写锁写锁定(读写句柄)
+        多线程_计数 = 多线程_计数 + 1
+        TracePrint "【写入】：" & 多线程_计数
+        Call Lib.神梦_多线程.读写锁解锁(读写句柄)
+        Delay 1000
+    Loop 
+End Sub
+
+
+//以下是当脚本【全部停止时】产生的事件   
+Sub OnScriptExit()   
+    Call Lib.神梦_多线程.读写锁销毁(读写句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
 <a name='互斥锁创建'></a>互斥锁创建 
 </td></tr><tr><th>命令功能：</th><td>
 创建一个互斥量。成功返回互斥量对象句柄，失败返回0 。
@@ -205,6 +455,154 @@ End Sub
 
 <table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
 <tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='临界区创建'></a>临界区创建 
+</td></tr><tr><th>命令功能：</th><td>
+创建一个临界许可。创建成功返回许可证，失败返回0
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+整数型，许可证
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_临界区创建" class="vb" id="code8_临界区创建">
+DimEnv 许可证, 多线程_计数
+
+'创建临界许可
+许可证 = Lib.神梦_多线程.临界区创建()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【许可证】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.临界区销毁(许可证)
+
+Sub 多线程()
+    Call Lib.神梦_多线程.临界区进入(许可证)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.临界区退出(许可证) '退出要跟进入许可区配对使用。
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='临界区进入'></a>临界区进入 
+</td></tr><tr><th>命令功能：</th><td>
+等待并进入/拥有这个临界许可
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，许可证
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_临界区进入" class="vb" id="code8_临界区进入">
+DimEnv 许可证, 多线程_计数
+
+'创建临界许可
+许可证 = Lib.神梦_多线程.临界区创建()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【许可证】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.临界区销毁(许可证)
+
+Sub 多线程()
+    Call Lib.神梦_多线程.临界区进入(许可证)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.临界区退出(许可证) '退出要跟进入许可区配对使用。
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='临界区退出'></a>临界区退出 
+</td></tr><tr><th>命令功能：</th><td>
+退出/释放这个许可证
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，许可证
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_临界区退出" class="vb" id="code8_临界区退出">
+DimEnv 许可证, 多线程_计数
+
+'创建临界许可
+许可证 = Lib.神梦_多线程.临界区创建()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【许可证】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.临界区销毁(许可证)
+
+Sub 多线程()
+    Call Lib.神梦_多线程.临界区进入(许可证)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.临界区退出(许可证) '退出要跟进入许可区配对使用。
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='临界区销毁'></a>临界区销毁 
+</td></tr><tr><th>命令功能：</th><td>
+销毁指定许可证。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，许可证
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_临界区销毁" class="vb" id="code8_临界区销毁">
+DimEnv 许可证, 多线程_计数
+
+'创建临界许可
+许可证 = Lib.神梦_多线程.临界区创建()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【许可证】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.临界区销毁(许可证)
+
+Sub 多线程()
+    Call Lib.神梦_多线程.临界区进入(许可证)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.临界区退出(许可证) '退出要跟进入许可区配对使用。
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
 <a name='事件创建'></a>事件创建 
 </td></tr><tr><th>命令功能：</th><td>
 创建一个 Event事件对象。创建成功返回对象句柄，失败返回0 。
@@ -318,7 +716,6 @@ End Sub
 销毁指定Event事件对象。
 </td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
 参数1【必选】：整数型，对象句柄
-
 </td></tr><tr><th>返回值：</th><td class='fanhui'>
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
@@ -342,6 +739,734 @@ Sub 多线程()
     Next
     TracePrint 多线程_计数
     Call Lib.神梦_多线程.事件退出(线程锁)'退出要跟进入许可区配对使用。
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='线程_挂起'></a>线程_挂起 
+</td></tr><tr><th>命令功能：</th><td>
+暂停某个线程的运行（PauseThread）
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，线程ID编号
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_线程_挂起" class="vb" id="code8_线程_挂起">
+线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
+For 3 
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_挂起(线程ID) //等待3秒后暂停“测试”线程的运行
+For 5
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_恢复(线程ID) //等待5秒后继续“测试”线程的运行
+For 3
+    Delay 1000
+Next
+ExitScript //等待3秒后停止并退出脚本运行
+Sub 测试()
+    i=0
+    Do 
+        TracePrint i
+        Delay 1000
+        i=i+1
+    Loop 
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='线程_恢复'></a>线程_恢复 
+</td></tr><tr><th>命令功能：</th><td>
+继续某个线程的运行（ContinueThread）
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，线程ID编号
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_线程_恢复" class="vb" id="code8_线程_恢复">
+线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
+For 3 
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_挂起(线程ID) //等待3秒后暂停“测试”线程的运行
+For 5
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_恢复(线程ID) //等待5秒后继续“测试”线程的运行
+For 3
+    Delay 1000
+Next
+ExitScript //等待3秒后停止并退出脚本运行
+Sub 测试()
+    i=0
+    Do 
+        TracePrint i
+        Delay 1000
+        i=i+1
+    Loop 
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='线程_结束'></a>线程_结束 
+</td></tr><tr><th>命令功能：</th><td>
+停止某个线程的运行（StopThread）
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，线程ID编号
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_线程_结束" class="vb" id="code8_线程_结束">
+线程ID = BeginThread(测试)//启动“测试”线程的运行
+For 3
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_结束(线程ID)//3秒后停止“测试”线程的运行
+Sub 测试()
+    i=0
+    Do 
+        TracePrint i
+        Delay 1000
+        i = i + 1
+    Loop 
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='线程_取当前ID'></a>线程_取当前ID 
+</td></tr><tr><th>命令功能：</th><td>
+得到当前线程的ID（GetThreadID）
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+整数型，线程ID
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_线程_取当前ID" class="vb" id="code8_线程_取当前ID">
+//对多线程返回的线程ID号，需要定义环境变量
+DimEnv 线程ID1, 线程ID2
+线程ID1 = BeginThread(子程序1)
+线程ID2 = BeginThread(子程序2)
+
+//以下是【测试用】子程序例子
+Dim i
+Sub 子程序1()
+    i=1 
+    TracePrint "子程序被线程启动！" & i  
+End Sub
+Sub 子程序2()
+    i=2
+    TracePrint "子程序被线程启动！" & i 
+End Sub
+
+//以下是【无限循环】防止全部脚本停止。
+Do 
+    Delay 1000
+Loop
+
+//以下是只对【多线程停止时】产生的事件 
+Sub OnThreadExit()
+    Dim ThreadID
+    ThreadID = Lib.神梦_多线程.线程_取当前ID() //得到当前线程的ID
+    Select Case ThreadID
+    Case 线程ID1 
+        //这样就可以针对某个线程进行操作
+        //比如：释放大漠插件对象
+        TracePrint i & " 当前线程(" & ThreadID & ")已经停止！" & 线程ID1  
+    Case 线程ID2
+        //这样就可以针对某个线程进行操作
+        //比如：释放361插件对象     
+        TracePrint i & " 当前线程(" & ThreadID & ")已经停止！" & 线程ID2 
+    End Select
+End Sub
+
+//以下是当脚本【全部停止时】产生的事件
+Sub OnScriptExit()
+    MessageBox "脚本已经停止！"
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='线程_取状态'></a>线程_取状态 
+</td></tr><tr><th>命令功能：</th><td>
+获取某个线程的运行状态。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，线程ID编号
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+整数型，运行状态，0=线程已结束；1=线程正在运行；-1=线程句柄已失效或销毁
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_线程_取状态" class="vb" id="code8_线程_取状态">
+TracePrint "【状态】：" & Lib.神梦_多线程.线程_取状态(线程ID) '返回 -1 无效线程句柄
+线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
+For 3 
+    Delay 1000
+Next
+TracePrint "【状态】：" & Lib.神梦_多线程.线程_取状态(线程ID) '返回 1 线程正在运行
+Call Lib.神梦_多线程.线程_挂起(线程ID) //等待3秒后暂停“测试”线程的运行
+For 5
+    Delay 1000
+Next
+TracePrint "【状态】：" & Lib.神梦_多线程.线程_取状态(线程ID) '返回 1 线程正在运行
+Call Lib.神梦_多线程.线程_恢复(线程ID) //等待5秒后继续“测试”线程的运行
+For 3
+    Delay 1000
+Next
+Call Lib.神梦_多线程.线程_结束(线程ID)//等待3秒后停止“测试”线程的运行
+Delay 2000
+TracePrint "【状态】：" & Lib.神梦_多线程.线程_取状态(线程ID) '返回 0 线程已结束
+ExitScript //等待3秒后停止并退出脚本运行
+Sub 测试()
+    i=0
+    Do 
+        TracePrint i
+        Delay 1000
+        i=i+1
+    Loop 
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='信号量创建'></a>信号量创建 
+</td></tr><tr><th>命令功能：</th><td>
+创建一个信号量。多用于控制线程数量。成功返回信号量句柄，失败返回0
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+整数型，对象句柄
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_信号量创建" class="vb" id="code8_信号量创建">
+DimEnv 信号句柄, 运行计次
+
+//创建信号量，并发上限设置为5
+信号句柄 = Lib.神梦_多线程.信号量创建(5)
+
+
+For 运行计次 = 1 To 100
+    BeginThread 多线程(运行计次)
+    Delay 500 '线程数越多，这里的延迟要越大
+Next
+Do
+	Delay 1000
+Loop Until Lib.神梦_多线程.信号量是否空闲(信号句柄)
+'销毁信号量
+Call Lib.神梦_多线程.信号量销毁(信号句柄)
+MsgBox "运行完毕！", 64 + 4096, "温馨提示！"
+
+
+Sub 多线程(参数)
+    i = 参数'重新赋值新变量，以免被其他线程影响
+    Call Lib.神梦_多线程.信号量等待(信号句柄)
+    
+    //以下写入你自己的代码
+    TracePrint "【" & i & "】开始运行。。。"
+    Delay 5000
+End Sub
+
+//以下是只对【多线程停止时】产生的事件   
+Sub OnThreadExit()
+    TracePrint "【" & i & "】结束！"
+    Call Lib.神梦_多线程.信号量释放(信号句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='信号量等待'></a>信号量等待 
+</td></tr><tr><th>命令功能：</th><td>
+等待并进入/拥有这个信号对象，当运行的线程数等于创建时设置的并发上限，其他线程将全部挂起等待
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_信号量等待" class="vb" id="code8_信号量等待">
+DimEnv 信号句柄, 运行计次
+
+//创建信号量，并发上限设置为5
+信号句柄 = Lib.神梦_多线程.信号量创建(5)
+
+
+For 运行计次 = 1 To 100
+    BeginThread 多线程(运行计次)
+    Delay 500 '线程数越多，这里的延迟要越大
+Next
+Do
+	Delay 1000
+Loop Until Lib.神梦_多线程.信号量是否空闲(信号句柄)
+'销毁信号量
+Call Lib.神梦_多线程.信号量销毁(信号句柄)
+MsgBox "运行完毕！", 64 + 4096, "温馨提示！"
+
+
+Sub 多线程(参数)
+    i = 参数'重新赋值新变量，以免被其他线程影响
+    Call Lib.神梦_多线程.信号量等待(信号句柄)
+    
+    //以下写入你自己的代码
+    TracePrint "【" & i & "】开始运行。。。"
+    Delay 5000
+End Sub
+
+//以下是只对【多线程停止时】产生的事件   
+Sub OnThreadExit()
+    TracePrint "【" & i & "】结束！"
+    Call Lib.神梦_多线程.信号量释放(信号句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='信号量是否空闲'></a>信号量是否空闲 
+</td></tr><tr><th>命令功能：</th><td>
+判断指定信号量是否有线程正在运行。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+逻辑型，是否空闲
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_信号量是否空闲" class="vb" id="code8_信号量是否空闲">
+DimEnv 信号句柄, 运行计次
+
+//创建信号量，并发上限设置为5
+信号句柄 = Lib.神梦_多线程.信号量创建(5)
+
+
+For 运行计次 = 1 To 100
+    BeginThread 多线程(运行计次)
+    Delay 500 '线程数越多，这里的延迟要越大
+Next
+Do
+	Delay 1000
+Loop Until Lib.神梦_多线程.信号量是否空闲(信号句柄)
+'销毁信号量
+Call Lib.神梦_多线程.信号量销毁(信号句柄)
+MsgBox "运行完毕！", 64 + 4096, "温馨提示！"
+
+
+Sub 多线程(参数)
+    i = 参数'重新赋值新变量，以免被其他线程影响
+    Call Lib.神梦_多线程.信号量等待(信号句柄)
+    
+    //以下写入你自己的代码
+    TracePrint "【" & i & "】开始运行。。。"
+    Delay 5000
+End Sub
+
+//以下是只对【多线程停止时】产生的事件   
+Sub OnThreadExit()
+    TracePrint "【" & i & "】结束！"
+    Call Lib.神梦_多线程.信号量释放(信号句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='信号量释放'></a>信号量释放 
+</td></tr><tr><th>命令功能：</th><td>
+退出/释放当前占用的信号量，让其他线程可以进入。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_信号量释放" class="vb" id="code8_信号量释放">
+DimEnv 信号句柄, 运行计次
+
+//创建信号量，并发上限设置为5
+信号句柄 = Lib.神梦_多线程.信号量创建(5)
+
+
+For 运行计次 = 1 To 100
+    BeginThread 多线程(运行计次)
+    Delay 500 '线程数越多，这里的延迟要越大
+Next
+Do
+	Delay 1000
+Loop Until Lib.神梦_多线程.信号量是否空闲(信号句柄)
+'销毁信号量
+Call Lib.神梦_多线程.信号量销毁(信号句柄)
+MsgBox "运行完毕！", 64 + 4096, "温馨提示！"
+
+
+Sub 多线程(参数)
+    i = 参数'重新赋值新变量，以免被其他线程影响
+    Call Lib.神梦_多线程.信号量等待(信号句柄)
+    
+    //以下写入你自己的代码
+    TracePrint "【" & i & "】开始运行。。。"
+    Delay 5000
+End Sub
+
+//以下是只对【多线程停止时】产生的事件   
+Sub OnThreadExit()
+    TracePrint "【" & i & "】结束！"
+    Call Lib.神梦_多线程.信号量释放(信号句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='信号量销毁'></a>信号量销毁 
+</td></tr><tr><th>命令功能：</th><td>
+销毁指定信号量。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：整数型，对象句柄
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_信号量销毁" class="vb" id="code8_信号量销毁">
+DimEnv 信号句柄, 运行计次
+
+//创建信号量，并发上限设置为5
+信号句柄 = Lib.神梦_多线程.信号量创建(5)
+
+
+For 运行计次 = 1 To 100
+    BeginThread 多线程(运行计次)
+    Delay 500 '线程数越多，这里的延迟要越大
+Next
+Do
+	Delay 1000
+Loop Until Lib.神梦_多线程.信号量是否空闲(信号句柄)
+'销毁信号量
+Call Lib.神梦_多线程.信号量销毁(信号句柄)
+MsgBox "运行完毕！", 64 + 4096, "温馨提示！"
+
+
+Sub 多线程(参数)
+    i = 参数'重新赋值新变量，以免被其他线程影响
+    Call Lib.神梦_多线程.信号量等待(信号句柄)
+    
+    //以下写入你自己的代码
+    TracePrint "【" & i & "】开始运行。。。"
+    Delay 5000
+End Sub
+
+//以下是只对【多线程停止时】产生的事件   
+Sub OnThreadExit()
+    TracePrint "【" & i & "】结束！"
+    Call Lib.神梦_多线程.信号量释放(信号句柄)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_初始化'></a>原子_初始化 
+</td></tr><tr><th>命令功能：</th><td>
+原子锁初始化。多用于解决整数型变量赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_初始化" class="vb" id="code8_原子_初始化">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_递增("多线程_计数")
+    Next
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_递减'></a>原子_递减 
+</td></tr><tr><th>命令功能：</th><td>
+递减参数的值。对提供的整数型变量-1。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量名称
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_递减" class="vb" id="code8_原子_递减">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 10000
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 0 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_递减("多线程_计数")
+    Next
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_递增'></a>原子_递增 
+</td></tr><tr><th>命令功能：</th><td>
+递增参数的值。对提供的整数型变量+1。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量名称
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_递增" class="vb" id="code8_原子_递增">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_递增("多线程_计数")
+    Next
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_赋值'></a>原子_赋值 
+</td></tr><tr><th>命令功能：</th><td>
+赋值参数的值。对提供的整数型变量赋值。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量名称
+参数2【必选】：数值型，赋值
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_赋值" class="vb" id="code8_原子_赋值">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 100 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    Dim i
+    For i = 1 To 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_赋值("多线程_计数", i)
+    Next
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_交换'></a>原子_交换 
+</td></tr><tr><th>命令功能：</th><td>
+交换参数的值。对提供的参数变量进行值交换。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量一名称
+参数2【必选】：文本型，环境变量二名称
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_交换" class="vb" id="code8_原子_交换">
+DimEnv 多线程_变量, 多线程_新变量
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_变量 = "神梦无痕"
+多线程_新变量 = "SMWH"
+For 99
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    '将环境变量名【多线程_变量】【多线程_新变量】以字符串传入
+    Call Lib.神梦_多线程.原子_交换("多线程_变量", "多线程_新变量")
+    TracePrint 多线程_变量 & " " & 多线程_新变量
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_三目运算'></a>原子_三目运算 
+</td></tr><tr><th>命令功能：</th><td>
+运算参数的数值。对提供的整数型变量进行三目运算。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量名称
+参数2【必选】：数值型，赋值
+参数3【必选】：数值型，对比值
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_三目运算" class="vb" id="code8_原子_三目运算">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 111
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出大于 300 表示执行成功！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    '将环境变量名【多线程_计数】以字符串传入
+    多线程_计数 = 多线程_计数 + 1
+    Call Lib.神梦_多线程.原子_三目运算("多线程_计数", 300, 99) '如果【多线程_计数】 = 99 则，【多线程_计数】赋值为300
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_销毁'></a>原子_销毁 
+</td></tr><tr><th>命令功能：</th><td>
+原子锁销毁。多用于解决整数型变量赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_销毁" class="vb" id="code8_原子_销毁">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 10000 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_递增("多线程_计数")
+    Next
+    TracePrint 多线程_计数
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_运算'></a>原子_运算 
+</td></tr><tr><th>命令功能：</th><td>
+运算参数的数值。对提供的整数型变量进行运算。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，环境变量名称
+参数2【必选】：数值型，运算值，支持正负号
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_运算" class="vb" id="code8_原子_运算">
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+MsgBox "等待所有线程执行完毕后，记得销毁【原子锁】！" & vbCrLf & "输出 0 表示执行完毕！", 64 + 4096, "温馨提示！"
+Call Lib.神梦_多线程.原子_销毁()
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+		Call Lib.神梦_多线程.原子_运算("多线程_计数", +2) '计数加2
+		Call Lib.神梦_多线程.原子_运算("多线程_计数", -2) '计数减2
+    Next
+    TracePrint 多线程_计数
 End Sub
 </td></tr></table>	
 	
@@ -491,14 +1616,41 @@ End Sub
     }
     dp.sh.Brushes.Vb.prototype = new dp.sh.Highlighter(); dp.sh.Brushes.Vb.Aliases = ['vb', 'vb.net'];
     dp.SyntaxHighlighter.ClipboardSwf = "http://www.vrbrothers.com/cn/qmacro/qmdn/htmls/zh_chs/qm/scripts/clipboard.swf";
+    dp.SyntaxHighlighter.HighlightAll('code8_读写锁创建',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_读写锁读锁定',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_读写锁解锁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_读写锁销毁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_读写锁写锁定',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_互斥锁创建',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_互斥锁进入',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_互斥锁退出',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_互斥锁销毁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_临界区创建',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_临界区进入',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_临界区退出',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_临界区销毁',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_事件创建',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_事件进入',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_事件退出',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_事件销毁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_线程_挂起',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_线程_恢复',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_线程_结束',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_线程_取当前ID',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_线程_取状态',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_信号量创建',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_信号量等待',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_信号量是否空闲',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_信号量释放',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_信号量销毁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_初始化',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_递减',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_递增',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_赋值',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_交换',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_三目运算',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_销毁',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_运算',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_自旋锁创建',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_自旋锁进入',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_自旋锁退出',true,true,false);
