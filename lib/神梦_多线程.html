@@ -53,6 +53,120 @@
 
 <table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
 <tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='_初始化'></a>_初始化 
+</td></tr><tr><th>命令功能：</th><td>
+初始化命令库，使用前必须调用该命令。（脚本开头初始化一次就行）
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+无
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+返回值：逻辑型，是否成功
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8__初始化" class="vb" id="code8__初始化">
+'===============【100个线程并发计数】===============
+'  作者：神梦无痕
+'  ＱＱ：1042207232
+'　Ｑ群：624655641
+'==================================================
+
+DimEnv 互斥锁, 事件锁, 自旋锁, 多线程_计数
+
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
+//=========================演示互斥锁=========================
+多线程_计数 = 0
+t = Timer()
+TracePrint "开始演示多线程中使用【互斥锁】。。。"
+'创建互斥体锁
+互斥锁 = Lib.神梦_多线程.互斥锁创建()
+For 100
+    BeginThread 多线程_互斥
+Next
+While 多线程_计数 < 10000
+Wend
+'销毁互斥体锁  
+Call Lib.神梦_多线程.互斥锁销毁(互斥锁)
+提示 = "多线程中使用【互斥锁】计数10000次耗时：" & Timer() - t & " 秒"
+MsgBox 提示, 64+4096, "【互斥锁】"  : TracePrint 提示
+
+
+//=========================演示事件锁=========================
+多线程_计数 = 0
+t = Timer()
+TracePrint "开始演示多线程中使用【事件锁】。。。"
+'创建事件
+事件锁 = Lib.神梦_多线程.事件创建()
+For 100
+    BeginThread 多线程_事件
+Next
+While 多线程_计数 < 10000
+Wend
+'销毁事件锁 
+Call Lib.神梦_多线程.事件销毁(事件锁)
+提示 = "多线程中使用【事件锁】计数10000次耗时：" & Timer() - t & " 秒"
+MsgBox 提示, 64+4096, "【事件锁】"  : TracePrint 提示
+
+
+//=========================演示自旋锁=========================
+多线程_计数 = 0
+t = Timer()
+TracePrint "开始演示多线程中使用【自旋锁】。。。"
+'创建自旋锁   
+自旋锁 = Lib.神梦_多线程.自旋锁创建()  
+For 100
+    BeginThread 多线程_自旋
+Next
+While 多线程_计数 < 10000
+Wend
+'自旋锁不需要销毁操作
+提示 = "多线程中使用【自旋锁】计数10000次耗时：" & Timer() - t & " 秒"
+MsgBox 提示, 64+4096, "【自旋锁】"  : TracePrint 提示
+
+Sub 多线程_互斥()
+	'  作者：神梦无痕
+	'  ＱＱ：1042207232
+	'　Ｑ群：624655641
+    Call Lib.神梦_多线程.互斥锁进入(互斥锁)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.互斥锁退出(互斥锁)'退出要跟进入许可区配对使用。
+End Sub
+Sub 多线程_事件()
+	'  作者：神梦无痕
+	'  ＱＱ：1042207232
+	'　Ｑ群：624655641
+    Call Lib.神梦_多线程.事件进入(事件锁)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.事件退出(事件锁)'退出要跟进入许可区配对使用。
+End Sub
+Sub 多线程_自旋()
+	'  作者：神梦无痕
+	'  ＱＱ：1042207232
+	'　Ｑ群：624655641
+    Call Lib.神梦_多线程.自旋锁进入(自旋锁)
+    '以下 进入许可区后，要操作的功能函数代码
+    For 100
+        多线程_计数 = 多线程_计数 + 1
+    Next
+    TracePrint 多线程_计数
+    Call Lib.神梦_多线程.自旋锁退出(自旋锁)'退出要跟进入许可区配对使用。
+End Sub
+
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
 <a name='读写锁创建'></a>读写锁创建 
 </td></tr><tr><th>命令功能：</th><td>
 创建读写锁。成功返回读写锁指针。失败返回0
@@ -62,6 +176,9 @@
 整数型，对象句柄
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_读写锁创建" class="vb" id="code8_读写锁创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 读写句柄, 多线程_计数
 
 多线程_计数 = 0
@@ -112,6 +229,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_读写锁读锁定" class="vb" id="code8_读写锁读锁定">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 读写句柄, 多线程_计数
 
 多线程_计数 = 0
@@ -162,6 +282,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_读写锁解锁" class="vb" id="code8_读写锁解锁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 读写句柄, 多线程_计数
 
 多线程_计数 = 0
@@ -212,6 +335,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_读写锁销毁" class="vb" id="code8_读写锁销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 读写句柄, 多线程_计数
 
 多线程_计数 = 0
@@ -262,6 +388,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_读写锁写锁定" class="vb" id="code8_读写锁写锁定">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 读写句柄, 多线程_计数
 
 多线程_计数 = 0
@@ -312,6 +441,9 @@ End Sub
 整数型，对象句柄
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_互斥锁创建" class="vb" id="code8_互斥锁创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建互斥体锁
@@ -350,6 +482,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_互斥锁进入" class="vb" id="code8_互斥锁进入">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建互斥体锁
@@ -388,6 +523,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_互斥锁退出" class="vb" id="code8_互斥锁退出">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建互斥体锁
@@ -426,6 +564,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_互斥锁销毁" class="vb" id="code8_互斥锁销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建互斥体锁
@@ -464,6 +605,9 @@ End Sub
 整数型，许可证
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_临界区创建" class="vb" id="code8_临界区创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 许可证, 多线程_计数
 
 '创建临界许可
@@ -501,6 +645,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_临界区进入" class="vb" id="code8_临界区进入">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 许可证, 多线程_计数
 
 '创建临界许可
@@ -538,6 +685,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_临界区退出" class="vb" id="code8_临界区退出">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 许可证, 多线程_计数
 
 '创建临界许可
@@ -575,6 +725,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_临界区销毁" class="vb" id="code8_临界区销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 许可证, 多线程_计数
 
 '创建临界许可
@@ -612,6 +765,9 @@ End Sub
 整数型，对象句柄
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_事件创建" class="vb" id="code8_事件创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建事件
@@ -648,6 +804,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_事件进入" class="vb" id="code8_事件进入">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建事件
@@ -684,6 +843,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_事件退出" class="vb" id="code8_事件退出">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建事件
@@ -720,6 +882,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_事件销毁" class="vb" id="code8_事件销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建事件
@@ -756,6 +921,10 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_线程_挂起" class="vb" id="code8_线程_挂起">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
 For 3 
     Delay 1000
@@ -793,6 +962,10 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_线程_恢复" class="vb" id="code8_线程_恢复">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
 For 3 
     Delay 1000
@@ -830,6 +1003,10 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_线程_结束" class="vb" id="code8_线程_结束">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 线程ID = BeginThread(测试)//启动“测试”线程的运行
 For 3
     Delay 1000
@@ -859,6 +1036,10 @@ End Sub
 整数型，线程ID
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_线程_取当前ID" class="vb" id="code8_线程_取当前ID">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 //对多线程返回的线程ID号，需要定义环境变量
 DimEnv 线程ID1, 线程ID2
 线程ID1 = BeginThread(子程序1)
@@ -916,6 +1097,10 @@ End Sub
 整数型，运行状态，0=线程已结束；1=线程正在运行；-1=线程句柄已失效或销毁
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_线程_取状态" class="vb" id="code8_线程_取状态">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 TracePrint "【状态】：" & Lib.神梦_多线程.线程_取状态(线程ID) '返回 -1 无效线程句柄
 线程ID=BeginThread(测试) //启动“测试”线程，并返回线程ID编号
 For 3 
@@ -959,6 +1144,10 @@ End Sub
 整数型，对象句柄
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_信号量创建" class="vb" id="code8_信号量创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+
 DimEnv 信号句柄, 运行计次
 
 //创建信号量，并发上限设置为5
@@ -1007,6 +1196,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_信号量等待" class="vb" id="code8_信号量等待">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 信号句柄, 运行计次
 
 //创建信号量，并发上限设置为5
@@ -1055,6 +1247,9 @@ End Sub
 逻辑型，是否空闲
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_信号量是否空闲" class="vb" id="code8_信号量是否空闲">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 信号句柄, 运行计次
 
 //创建信号量，并发上限设置为5
@@ -1103,6 +1298,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_信号量释放" class="vb" id="code8_信号量释放">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 信号句柄, 运行计次
 
 //创建信号量，并发上限设置为5
@@ -1151,6 +1349,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_信号量销毁" class="vb" id="code8_信号量销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 信号句柄, 运行计次
 
 //创建信号量，并发上限设置为5
@@ -1199,6 +1400,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_初始化" class="vb" id="code8_原子_初始化">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1234,6 +1438,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_递减" class="vb" id="code8_原子_递减">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1269,6 +1476,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_递增" class="vb" id="code8_原子_递增">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1305,6 +1515,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_赋值" class="vb" id="code8_原子_赋值">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1342,6 +1555,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_交换" class="vb" id="code8_原子_交换">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_变量, 多线程_新变量
 
 '原子锁初始化
@@ -1378,6 +1594,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_三目运算" class="vb" id="code8_原子_三目运算">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1412,6 +1631,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_销毁" class="vb" id="code8_原子_销毁">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1448,6 +1670,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_原子_运算" class="vb" id="code8_原子_运算">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 多线程_计数
 
 '原子锁初始化
@@ -1484,6 +1709,9 @@ End Sub
 整数型，对象句柄
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_自旋锁创建" class="vb" id="code8_自旋锁创建">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建自旋锁
@@ -1520,6 +1748,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_自旋锁进入" class="vb" id="code8_自旋锁进入">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建自旋锁
@@ -1556,6 +1787,9 @@ End Sub
 无
 </td></tr><tr><th><span class='red'>脚本例子：</span>
 </th><td class='lizi'><pre name="code8_自旋锁退出" class="vb" id="code8_自旋锁退出">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
 DimEnv 线程锁, 多线程_计数
 
 '创建自旋锁
@@ -1616,6 +1850,7 @@ End Sub
     }
     dp.sh.Brushes.Vb.prototype = new dp.sh.Highlighter(); dp.sh.Brushes.Vb.Aliases = ['vb', 'vb.net'];
     dp.SyntaxHighlighter.ClipboardSwf = "http://www.vrbrothers.com/cn/qmacro/qmdn/htmls/zh_chs/qm/scripts/clipboard.swf";
+    dp.SyntaxHighlighter.HighlightAll('code8__初始化',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_读写锁创建',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_读写锁读锁定',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_读写锁解锁',true,true,false);

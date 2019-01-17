@@ -6,8 +6,8 @@ MacroID=652ab43d-d143-47d0-819d-61745b09cade
 [Script]
 '======================================[需要脚本定制可以找我]======================================
 '【神梦多线程命令库】
-'版本：v1.1
-'更新：2018.01.07
+'版本：v1.2
+'更新：2019.01.17
 '作者：神梦无痕
 'ＱＱ：1042207232
 'Ｑ群：624655641
@@ -106,11 +106,16 @@ Declare Function SetProcessAffinityMask Lib "kernel32.dll" (ByVal hProcess As Lo
 '
 '
 '--------------------------------[定义变量]--------------------------------
-DimEnv DimEnv_原子句柄
+DimEnv DimEnv_Thread_Init, DimEnv_Thread_Tally, DimEnv_原子句柄
 '
 '--------------------------------[原子锁]--------------------------------
 Sub 原子_初始化()
-	DimEnv_原子句柄 = CreateEventLong(0, 0, 1, 0)
+	If DimEnv_Thread_Init Then 
+		DimEnv_原子句柄 = CreateEventLong(0, 0, 1, 0)
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Sub
 Sub 原子_销毁()
 	Call CloseHandle(DimEnv_原子句柄)
@@ -155,10 +160,15 @@ End Sub
 '
 '--------------------------------[互斥锁]--------------------------------
 Function 互斥锁创建()
-	Dim 锁标识, i
-	锁标识 = "互斥锁_神梦无痕_QQ：1042207232_由【果兒】提供_"
-	For i = 0 To 12 : Randomize :锁标识 = 锁标识 & Chr((24 * Rnd) + 65) :Next
-    互斥锁创建 = CreateMutex(0, false, 锁标识)
+	If DimEnv_Thread_Init Then 
+		Dim 锁标识, i
+		锁标识 = "互斥锁_神梦无痕_QQ：1042207232_由【果兒】提供_"
+		For i = 0 To 12 : Randomize :锁标识 = 锁标识 & Chr((24 * Rnd) + 65) :Next
+    	互斥锁创建 = CreateMutex(0, false, 锁标识)
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Sub 互斥锁进入(锁句柄)
     Call WaitForSingleObject(锁句柄, 4294967295)
@@ -172,10 +182,15 @@ End Sub
 '
 '--------------------------------[临界区]--------------------------------
 Function 临界区创建()
-	Dim 许可标识, i
-	许可标识 = "临界许可_神梦无痕_QQ：1042207232_许可证_"
-	For i = 0 To 12 : Randomize :许可标识 = 许可标识 & Chr((24 * Rnd) + 65) :Next
-    临界区创建 = CreateEvent(0, 0, 1, 许可标识)
+	If DimEnv_Thread_Init Then 
+		Dim 许可标识, i
+		许可标识 = "临界许可_神梦无痕_QQ：1042207232_许可证_"
+		For i = 0 To 12 : Randomize :许可标识 = 许可标识 & Chr((24 * Rnd) + 65) :Next
+    	临界区创建 = CreateEvent(0, 0, 1, 许可标识)
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Sub 临界区进入(许可证)
     Call WaitForSingleObject(许可证, 4294967295)
@@ -189,10 +204,15 @@ End Sub
 '
 '--------------------------------[事件]--------------------------------
 Function 事件创建()
-	Dim 事件标识, i
-	事件标识 = "事件_神梦无痕_QQ：1042207232_由【风__琪仙】提供_"
-	For i = 0 To 12 : Randomize :事件标识 = 事件标识 & Chr((24 * Rnd) + 65) :Next
-    事件创建 = CreateEvent(0, 0, 1, 事件标识)
+	If DimEnv_Thread_Init Then 
+		Dim 事件标识, i
+		事件标识 = "事件_神梦无痕_QQ：1042207232_由【风__琪仙】提供_"
+		For i = 0 To 12 : Randomize :事件标识 = 事件标识 & Chr((24 * Rnd) + 65) :Next
+    	事件创建 = CreateEvent(0, 0, 1, 事件标识)
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Sub 事件进入(事件句柄)
     Call WaitForSingleObject(事件句柄, 4294967295)
@@ -206,7 +226,12 @@ End Sub
 '
 '--------------------------------[自旋锁]--------------------------------
 Function 自旋锁创建()
-    自旋锁创建 = GetThreadID() & Int(GetTickCount() * Rnd)
+	If DimEnv_Thread_Init Then 
+        自旋锁创建 = GetThreadID() + Int(GetTickCount() * Rnd)
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Sub 自旋锁进入(锁句柄)
     Dim 锁ID标识, 锁状态标识
@@ -247,16 +272,21 @@ End Sub
 在这个停车场系统中，车位是公共资源，每辆车好比一个线程，看门人起的就是信号量的作用。
 */
 Function 信号量创建(并发上限)
-	Dim 信号标识, i, Ret, 标识_空闲线程, 标识_并发上限
-	信号标识 = "信号量_神梦无痕_QQ：1042207232_"
-	For i = 0 To 12 : Randomize :信号标识 = 信号标识 & Chr((24 * Rnd) + 65) :Next
-	If IsNumeric(CStr(并发上限)) = False Or 并发上限 = "0" Then 并发上限 = 1
-	Ret = CreateEvent(0, 0, 1, 信号标识)
-	标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & Ret
-	标识_并发上限 = "信号量_神梦无痕_QQ：1042207232_并发上限_" & Ret
-	SetEnv 标识_空闲线程, 并发上限
-	SetEnv 标识_并发上限, 并发上限
-	信号量创建 = Ret
+	If DimEnv_Thread_Init Then 
+		Dim 信号标识, i, Ret, 标识_空闲线程, 标识_并发上限
+		信号标识 = "信号量_神梦无痕_QQ：1042207232_"
+		For i = 0 To 12 : Randomize :信号标识 = 信号标识 & Chr((24 * Rnd) + 65) :Next
+		If IsNumeric(CStr(并发上限)) = False Or 并发上限 = "0" Then 并发上限 = 1
+		Ret = CreateEvent(0, 0, 1, 信号标识)
+		标识_空闲线程 = "信号量_神梦无痕_QQ：1042207232_空闲线程_" & Ret
+		标识_并发上限 = "信号量_神梦无痕_QQ：1042207232_并发上限_" & Ret
+		SetEnv 标识_空闲线程, 并发上限
+		SetEnv 标识_并发上限, 并发上限
+		信号量创建 = Ret
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Function 信号量是否空闲(信号句柄)
 	Dim 标识_空闲线程, 标识_并发上限
@@ -292,14 +322,19 @@ End Sub
 '
 '--------------------------------[读写锁]--------------------------------
 Function 读写锁创建()
-	Dim 标识_读取锁, 标识_写入锁, Ret
-    Ret = CreateEventLong(0, 0, 1, 0)
-	标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & Ret
-	标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & Ret
-	SetEnv 标识_写入锁, CreateEvent(0, 1, 1, 标识_写入锁)
-	SetEnv 标识_读取锁, CreateMutex(0, false, 标识_读取锁)
-	SetEnv Ret, 0
-	读写锁创建 = Ret
+	If DimEnv_Thread_Init Then 
+		Dim 标识_读取锁, 标识_写入锁, Ret
+    	Ret = CreateEventLong(0, 0, 1, 0)
+		标识_读取锁 = "读写锁_神梦无痕_QQ：1042207232_读取锁_" & Ret
+		标识_写入锁 = "读写锁_神梦无痕_QQ：1042207232_写入锁_" & Ret
+		SetEnv 标识_写入锁, CreateEvent(0, 1, 1, 标识_写入锁)
+		SetEnv 标识_读取锁, CreateMutex(0, false, 标识_读取锁)
+		SetEnv Ret, 0
+		读写锁创建 = Ret
+	Else
+		If Not IsObject(Msg) Then Set Msg = CreateObject("QMPlugin.Msg") 
+		Msg.Tips "出错，请先执行【_初始化()】命令，初始化命令库！" : TracePrint Dim_Tips
+	End If
 End Function
 Sub 读写锁读锁定(读写句柄)
 	Dim 标识_读取锁, 标识_写入锁, code, Ret
@@ -423,8 +458,49 @@ Sub A【ＱＱ】：1042207232()
 End Sub
 Sub B________［需要脚本定制Q我］_____________()
 End Sub
-'
+
+'//初始化命令库，使用前必须调用该命令
+'返回值：逻辑型，是否成功
+Function _初始化()
+    Dim Ret
+    '-----------------------【当前版本号】-----------------------
+    当前版本 = "1.2"
+    '-----------------------------------------------------------
+    If DimEnv_Thread_Init = "" Then
+    	Import "Msg.dll"
+    	Import "Sys.dll"
+    	Import "Window.dll"
+    	If Window.Search("按键精灵") <> "" Then
+    		DimEnv_Thread_Tally = 0
+    		Execute _
+    		"On Error Resume Next:" & _
+    		"Set xmlHttp = CreateObject(""WinHttp.WinHttpRequest.5.1""):" & _
+    		"xmlHttp.open ""GET"", ""http://www.smwh.online/Office/SoftwTally/SoftwTally.asp?SoftName=神梦_多线程&Rem="& 当前版本 &"&SN="& Sys.GetHDDSN() &""", True:" & _
+    		"xmlHttp.send:" & _
+    		"If xmlHttp.waitForResponse(1) Then:" & _
+    		"    If xmlHttp.statusText = ""OK"" Then:" & _
+    		"        SetEnv ""DimEnv_Thread_Tally"", xmlHttp.responseText:" & _
+    		"    End If:" & _
+    		"End If"
+    	End If 
+    End If
+    If Not IsNumeric(CStr(DimEnv_Thread_Tally)) Then DimEnv_Thread_Tally = 0
+    TracePrint "【库名】：神梦_多线程（v"& 当前版本 &"）"
+    TracePrint "【作者】：神梦无痕"
+    TracePrint "【ＱＱ】：1042207232"
+    TracePrint "【Ｑ群】：624655641"
+    TracePrint "【网站】：www.神梦.com"
+	TracePrint "【人数】：" & DimEnv_Thread_Tally & " 人"
+	Ret = True
+	_初始化 = Ret : DimEnv_Thread_Init = Ret 
+End Function
+
 /*〓〓〓〓〓〓〓〓【更新历史】〓〓〓〓〓〓〓〓
+神梦_多线程v1.2 2019.01.17
+\
+|-- 新增 _初始化() 命令
+|
+|
 神梦_多线程v1.1 2018.01.07
 \
 |-- 新增 读写锁创建() 命令
