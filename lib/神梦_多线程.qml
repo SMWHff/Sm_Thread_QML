@@ -6,8 +6,8 @@ MacroID=652ab43d-d143-47d0-819d-61745b09cade
 [Script]
 '======================================[需要脚本定制可以找我]======================================
 '【神梦多线程命令库】
-'版本：v1.2
-'更新：2019.01.17
+'版本：v1.3
+'更新：2019.01.18
 '作者：神梦无痕
 'ＱＱ：1042207232
 'Ｑ群：624655641
@@ -106,7 +106,7 @@ Declare Function SetProcessAffinityMask Lib "kernel32.dll" (ByVal hProcess As Lo
 '
 '
 '--------------------------------[定义变量]--------------------------------
-DimEnv DimEnv_Thread_Init, DimEnv_Thread_Tally, DimEnv_原子句柄
+DimEnv DimEnv_Thread_Init, DimEnv_Thread_Tally, DimEnv_Thread_Data, DimEnv_Thread_NewTips, DimEnv_原子句柄
 '
 '--------------------------------[原子锁]--------------------------------
 Sub 原子_初始化()
@@ -153,6 +153,11 @@ Sub 原子_三目运算(变量名, 赋值, 对比值)
 	If GetEnv(变量名) = 对比值 Then 
 		SetEnv 变量名, 赋值
 	End If
+	Call SetEvent(DimEnv_原子句柄)
+End Sub
+Sub 原子_调试输出(提示)
+	Call WaitForSingleObject(DimEnv_原子句柄, 4294967295)
+	TracePrint 提示
 	Call SetEvent(DimEnv_原子句柄)
 End Sub
 '
@@ -262,6 +267,10 @@ End Sub
 '
 '
 '--------------------------------[信号量]--------------------------------
+'作者：神梦无痕
+'ＱＱ：1042207232
+'Ｑ群：624655641
+'
 /*【描述】（空闲线程 --> 空车位）
 以一个停车场的运作为例。简单起见，假设停车场只有三个车位【并发上限】， 
 一开始三个车位都是空的【空闲线程】。这时如果同时来了五辆车，看门人允许其中三辆直接进入【空闲线程-3】， 
@@ -321,6 +330,24 @@ Sub 信号量销毁(信号句柄)
 End Sub 
 '
 '--------------------------------[读写锁]--------------------------------
+'作者：神梦无痕
+'ＱＱ：1042207232
+'Ｑ群：624655641
+'
+/*【描述】
+读写锁实际是一种特殊的自旋锁，它把对共享资源的访问者划分成读者和写者，读者只对共享资源进行读访问，写者则需要对共享资源进行写操作。 
+读读共享，读写互斥。
+
+【举例】
+以在黑板上上写字为例，老师是写者，学生是读着，如果老师在黑板上写一个“天”字，
+如果老师没有写完，就读取的话，看到是一个“一”字、或者“二”字，这不是我们想要的， 
+所以必须等老师写完，学生再读取黑板上的内容才是正确的！ 
+老师问学生看完了没，学生说看完了，老师就把黑板擦干净了！ 
+
+每个学生看做一个线程，可以同时读取【读读共享】， 
+老师写的时候，学生等待老师写完再读取【写读互斥】。
+当学生都读完了，老师才会把黑板檫干净【读写互斥】。
+*/
 Function 读写锁创建()
 	If DimEnv_Thread_Init Then 
 		Dim 标识_读取锁, 标识_写入锁, Ret
@@ -452,9 +479,9 @@ End Function
 '
 Sub A_______________________________________()
 End Sub
-Sub A【作者】：神梦无痕()
-End Sub
 Sub A【ＱＱ】：1042207232()
+End Sub
+Sub A【作者】：神梦无痕()
 End Sub
 Sub B________［需要脚本定制Q我］_____________()
 End Sub
@@ -464,7 +491,7 @@ End Sub
 Function _初始化()
     Dim Ret
     '-----------------------【当前版本号】-----------------------
-    当前版本 = "1.2"
+    当前版本 = "1.3"
     '-----------------------------------------------------------
     If DimEnv_Thread_Init = "" Then
     	Import "Msg.dll"
@@ -472,6 +499,7 @@ Function _初始化()
     	Import "Window.dll"
     	If Window.Search("按键精灵") <> "" Then
     		DimEnv_Thread_Tally = 0
+    		DimEnv_Thread_NewTips = "无需更新！"
     		Execute _
     		"On Error Resume Next:" & _
     		"Set xmlHttp = CreateObject(""WinHttp.WinHttpRequest.5.1""):" & _
@@ -481,21 +509,53 @@ Function _初始化()
     		"    If xmlHttp.statusText = ""OK"" Then:" & _
     		"        SetEnv ""DimEnv_Thread_Tally"", xmlHttp.responseText:" & _
     		"    End If:" & _
-    		"End If"
+    		"End If:" & _
+			"NewVer=0:Set RepEx=New RegExp:RepEx.IgnoreCase=True:RepEx.Global=True:RepEx.Pattern=""\{v(.*?)\}"":" & _
+			"xmlHttp.open ""GET"", ""https://www.jianshu.com/p/84cd94b647ad"", True:" & _
+			"xmlHttp.send:" & _
+			"If xmlHttp.waitForResponse(1) Then:" & _
+			"    If xmlHttp.statusText = ""OK"" Then:" & _
+			"        Text = xmlHttp.responseText:" & _
+			"    End If:" & _
+			"End If:" & _
+			"L1 = InStr(Text, ""【公告】""):L2 = InStr(Text, ""【/公告】""):" & _
+			"If L1 > 0 And L2 > 0 Then:" & _
+			"   Arr = Split(Mid(Text, L1+4, L2-L1-4) & vbCrLf & UnEscape(""%u5E7F%u544A%u4F4D%u51FA%u79DF%uFF0C%u8054%u7CFBQQ%uFF1A1042207232""), vbCrLf):" & _
+			"   if UBound(Arr)>-1 Then:" & _
+			"       Randomize:n = CInt((UBound(Arr)+1)*Rnd+1)-1:" & _
+			"	    SetEnv ""DimEnv_Thread_Data"", ""<!--"" & Arr(n) & ""-->"" & Space(1024) & ""<span style='color:FF00FF'>"" & Arr(n) & ""</span>"":" & _
+			"   End If:" & _
+			"End If:" & _
+			"If RepEx.Test(Text) Then:" & _
+			"    NewVer = RepEx.Execute(Text).Item(0).SubMatches.Item(0):" & _
+			"    If Not IsNumeric(Replace(NewVer, ""."", """")) Then:" & _
+			"        NewVer = 0:" & _
+			"    End If:" & _
+			"End If:" & _
+			"If NewVer > """& 当前版本 &""" Then:" & _
+			"	SetEnv ""DimEnv_Thread_NewTips"", ""发现新的版本v"" & NewVer & ""，可以进群下载！""& Space(1024) & ""<img src='#' onerror='this.parentNode.style.color=""""#ff0000""""' style='display:none'>"":" & _
+			"End If:SetEnv ""DimEnv_Thread_Init"", true"
     	End If 
     End If
     If Not IsNumeric(CStr(DimEnv_Thread_Tally)) Then DimEnv_Thread_Tally = 0
+    TracePrint DimEnv_Thread_Data
     TracePrint "【库名】：神梦_多线程（v"& 当前版本 &"）"
     TracePrint "【作者】：神梦无痕"
     TracePrint "【ＱＱ】：1042207232"
     TracePrint "【Ｑ群】：624655641"
     TracePrint "【网站】：www.神梦.com"
 	TracePrint "【人数】：" & DimEnv_Thread_Tally & " 人"
+	TracePrint "【更新】：" & DimEnv_Thread_NewTips
 	Ret = True
-	_初始化 = Ret : DimEnv_Thread_Init = Ret 
+	_初始化 = Ret
 End Function
 
 /*〓〓〓〓〓〓〓〓【更新历史】〓〓〓〓〓〓〓〓
+神梦_多线程v1.3 2019.01.18
+\
+|-- 新增 原子_调试输出() 命令
+|
+|
 神梦_多线程v1.2 2019.01.17
 \
 |-- 新增 _初始化() 命令

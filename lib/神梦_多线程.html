@@ -159,7 +159,6 @@ Sub 多线程_自旋()
     TracePrint 多线程_计数
     Call Lib.神梦_多线程.自旋锁退出(自旋锁)'退出要跟进入许可区配对使用。
 End Sub
-
 </td></tr></table>	
 	
 	
@@ -1505,6 +1504,52 @@ End Sub
 
 <table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
 <tr><th width='100px'>命令名称：</th><td class='name'>
+<a name='原子_调试输出'></a>原子_调试输出 
+</td></tr><tr><th>命令功能：</th><td>
+调试输出内容，按键精灵的调试是共享资源。多线程中使用可避免赋值冲突。
+</td></tr><tr><th>命令参数：</th><td class='canshu'><pre>
+参数1【必选】：文本型，调试内容
+</td></tr><tr><th>返回值：</th><td class='fanhui'>
+无
+</td></tr><tr><th><span class='red'>脚本例子：</span>
+</th><td class='lizi'><pre name="code8_原子_调试输出" class="vb" id="code8_原子_调试输出">
+//初始化命令库，使用前必须调用该命令
+Call Lib.神梦_多线程._初始化()
+
+DimEnv 多线程_计数
+
+'原子锁初始化
+Call Lib.神梦_多线程.原子_初始化()
+
+多线程_计数 = 0
+For 100
+    BeginThread 多线程
+Next
+
+//达到 10000 表示执行完毕！
+Do
+    Delay 3000
+Loop Until 多线程_计数 >= 10000
+
+//所有线程执行完毕后，记得销毁【原子锁】！
+Call Lib.神梦_多线程.原子_销毁()
+
+MsgBox "脚本执行完毕！", 4096, "温馨提示！"
+
+Sub 多线程()
+    For 100
+        '将环境变量名【多线程_计数】以字符串传入
+        Call Lib.神梦_多线程.原子_递增("多线程_计数")
+    Next
+    Call Lib.神梦_多线程.原子_调试输出(多线程_计数)
+End Sub
+</td></tr></table>	
+	
+	
+
+
+<table width='100%' border='0' cellpadding='0' cellspacing='1' class='ts'>
+<tr><th width='100px'>命令名称：</th><td class='name'>
 <a name='原子_赋值'></a>原子_赋值 
 </td></tr><tr><th>命令功能：</th><td>
 赋值参数的值。对提供的整数型变量赋值。多线程中使用可避免赋值冲突。
@@ -1881,6 +1926,7 @@ End Sub
     dp.SyntaxHighlighter.HighlightAll('code8_原子_初始化',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_原子_递减',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_原子_递增',true,true,false);
+    dp.SyntaxHighlighter.HighlightAll('code8_原子_调试输出',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_原子_赋值',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_原子_交换',true,true,false);
     dp.SyntaxHighlighter.HighlightAll('code8_原子_三目运算',true,true,false);
