@@ -11,19 +11,11 @@ Dimenv 计次
 //初始化命令库，使用前必须调用该命令
 Call Lib.神梦_多线程._初始化()
 
-Call Lib.神梦_多线程.原子_初始化()
 计次 = 0
 
 For 100
     BeginThread 多线程()
 Next
-
-//防止主线程结束
-t = Timer()
-Do
-    Delay 1000
-Loop Until 计次 >= 10000 
-MsgBox "脚本运行完毕！", 64+4096, "多线程稳定奔放例子"
 
 Sub 多线程()
     For 100
@@ -31,9 +23,4 @@ Sub 多线程()
         Call Lib.神梦_多线程.原子_递增("计次") '每执行一次，计次的值+1
     Next
     TracePrint 计次
-End Sub
-
-//以下是当脚本【全部停止时】产生的事件      
-Sub OnScriptExit()      
-    Call Lib.神梦_多线程.原子_销毁() 
 End Sub

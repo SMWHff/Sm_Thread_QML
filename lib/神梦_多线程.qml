@@ -6,51 +6,20 @@ MacroID=652ab43d-d143-47d0-819d-61745b09cade
 [Script]
 '======================================[需要脚本定制可以找我]======================================
 '【神梦多线程命令库】
-'版本：v1.3
-'更新：2019.01.18
+'版本：v1.4
+'更新：2020.06.11
 '作者：神梦无痕
 'ＱＱ：1042207232
 'Ｑ群：624655641
 '================================================================================================
 '
-'PC端挂机宝VPN，单进程单IP，购买联系Q：1042207232
+'【命令库】仿WQM利用IE+Chrome谷歌双核网页智能填表跨域框架+运行JS+智能定位{v999}[2018.7.2] http://bbs.anjian.com/showtopic-657914-1.aspx
+'
+'PC端挂机宝换IP，单进程单IP，手机无极VPN，购买联系Q：3007328759
 '
 '代查QQ、手机号是否开通微信，精确度高达99%，购买联系Q：1042207232
 '
 '================================================================================================
-'
-/*-------------------------按键精灵里不支持下面的API
-'原子锁递减（跨进程）
-Declare Function InterlockedDecrement Lib "kernel32.dll" Alias "InterlockedDecrement" (ByVal lpAddend As Long) As Long 
-'原子锁递增
-Declare Function InterlockedIncrement Lib "kernel32.dll" Alias "InterlockedIncrement" (ByVal lpAddend As Long) As Long 
-'原子锁赋值
-Declare Function InterlockedExchange Lib "kernel32.dll" Alias "InterlockedExchange" (Target As Long, ByVal Value As Long) As Long
-'原子锁运算
-Declare Function InterlockedExchangeAdd Lib "kernel32.dll" Alias "InterlockedExchangeAdd" (Addend As Long, ByVal Value As Long) As Long
-'原子锁三目运算
-Declare Function InterlockedCompareExchange Lib "kernel32.dll" Alias "InterlockedExchangeAdd" (Destination As Long, ByVal Exchange As Long, ByVal Comperand As Long) As Long
-'
-'临界许可创建（跨线程）
-Declare Function InitializeCriticalSection Lib "kernel32.dll" Alias "InitializeCriticalSection" (lpCriticalSection As Any) As Long 
-'临界区尝试进入
-Declare Function TryEnterCriticalSection Lib "kernel32.dll" Alias "TryEnterCriticalSection" (lpCriticalSection As Any) As Boolean 
-'临界区进入
-Declare Function EnterCriticalSection Lib "kernel32.dll" Alias "EnterCriticalSection" (lpCriticalSection As Any) As Long 
-'临界区退出
-Declare Function LeaveCriticalSection Lib "kernel32.dll" Alias "LeaveCriticalSection" (lpCriticalSection As Any) As Long 
-'临界许可销毁
-Declare Function DeleteCriticalSection Lib "kernel32.dll" Alias "DeleteCriticalSection" (lpCriticalSection As Any) As Long 
-'
-'信号量创建（跨进程）
-Declare Function CreateSemaphore Lib "kernel32" Alias "CreateSemaphoreA" (lpSemaphoreAttributes As Long, ByVal lInitialCount As Long, ByVal lMaximumCount As Long, ByVal lpName As String) As Long
-'信号量打开
-Declare Function OpenSemaphore Lib "kernel32" Alias "OpenSemaphoreA" (ByVal dwDesiredAccess As Long, ByVal 是否继承 As Boolean, ByVal lpName As String  ) As Long 
-'信号量递增
-Declare Function ReleaseSemaphore Lib "kernel32" Alias "ReleaseSemaphore" (ByVal 句柄 As Long, ByVal 增加的数量 As Long, 之前的数量 As Long) As Long
-'信号量递减
-Declare Function WaitForSingleObject Lib "kernel32" Alias "WaitForSingleObject" (ByVal hHandle As Long, ByVal dwMilliseconds As Long) As Long
--------------------------*/
 '
 '互斥锁创建（跨进程）
 Declare Function CreateMutex Lib "kernel32" Alias "CreateMutexA" (安全属性 As Long , ByVal 是否立即拥有 As Long, ByVal 互斥名称 As String) As Long
@@ -335,11 +304,11 @@ End Sub
 'Ｑ群：624655641
 '
 /*【描述】
-读写锁实际是一种特殊的自旋锁，它把对共享资源的访问者划分成读者和写者，读者只对共享资源进行读访问，写者则需要对共享资源进行写操作。 
+读写锁实际是一种特殊的自旋锁，它把对共享资源的访问者划分成读取者和写入者，读取者只对共享资源进行读访问，写入者则需要对共享资源进行写操作。 
 读读共享，读写互斥。
 
 【举例】
-以在黑板上上写字为例，老师是写者，学生是读着，如果老师在黑板上写一个“天”字，
+以在黑板上上写字为例，老师是写入者，学生是读取者，如果老师在黑板上写一个“天”字，
 如果老师没有写完，就读取的话，看到是一个“一”字、或者“二”字，这不是我们想要的， 
 所以必须等老师写完，学生再读取黑板上的内容才是正确的！ 
 老师问学生看完了没，学生说看完了，老师就把黑板擦干净了！ 
@@ -491,7 +460,7 @@ End Sub
 Function _初始化()
     Dim Ret
     '-----------------------【当前版本号】-----------------------
-    当前版本 = "1.3"
+    当前版本 = "1.4"
     '-----------------------------------------------------------
     If DimEnv_Thread_Init = "" Then
     	Import "Msg.dll"
@@ -511,7 +480,7 @@ Function _初始化()
     		"    End If:" & _
     		"End If:" & _
 			"NewVer=0:Set RepEx=New RegExp:RepEx.IgnoreCase=True:RepEx.Global=True:RepEx.Pattern=""\{v(.*?)\}"":" & _
-			"xmlHttp.open ""GET"", ""https://www.jianshu.com/p/84cd94b647ad"", True:" & _
+			"xmlHttp.open ""GET"", ""https://360biji.com/note/view/643814"", True:" & _
 			"xmlHttp.send:" & _
 			"If xmlHttp.waitForResponse(1) Then:" & _
 			"    If xmlHttp.statusText = ""OK"" Then:" & _
@@ -535,7 +504,7 @@ Function _初始化()
 			"If NewVer > """& 当前版本 &""" Then:" & _
 			"	SetEnv ""DimEnv_Thread_NewTips"", ""发现新的版本v"" & NewVer & ""，可以进群下载！""& Space(1024) & ""<img src='#' onerror='this.parentNode.style.color=""""#ff0000""""' style='display:none'>"":" & _
 			"End If:SetEnv ""DimEnv_Thread_Init"", true"
-    	End If 
+    	End If
     End If
     If Not IsNumeric(CStr(DimEnv_Thread_Tally)) Then DimEnv_Thread_Tally = 0
     TracePrint DimEnv_Thread_Data
@@ -546,12 +515,18 @@ Function _初始化()
     TracePrint "【网站】：www.神梦.com"
 	TracePrint "【人数】：" & DimEnv_Thread_Tally & " 人"
 	TracePrint "【更新】：" & DimEnv_Thread_NewTips
+	If DimEnv_Thread_Init Then Call 原子_初始化()
 	Ret = True
 	_初始化 = Ret
 End Function
 
 /*〓〓〓〓〓〓〓〓【更新历史】〓〓〓〓〓〓〓〓
-神梦_多线程v1.3 2019.01.18
+神梦_多线程v1.4 2020.06.11
+\
+|-- 优化 _初始化() 命令，成功会执行 原子_初始化() 命令
+|
+|
+神梦_多线程v1.3 2019.01.25
 \
 |-- 新增 原子_调试输出() 命令
 |

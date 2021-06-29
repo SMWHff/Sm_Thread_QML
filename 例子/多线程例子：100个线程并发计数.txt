@@ -19,6 +19,7 @@ For 100
     BeginThread 多线程A
 Next
 While 多线程_计数 < 10000
+    Delay 100
 Wend
 '销毁互斥体锁  
 Call Lib.神梦_多线程.互斥锁销毁(互斥锁)
@@ -35,6 +36,7 @@ For 100
     BeginThread 多线程B
 Next
 While 多线程_计数 < 10000
+    Delay 100
 Wend
 '销毁事件锁 
 Call Lib.神梦_多线程.事件销毁(事件锁)

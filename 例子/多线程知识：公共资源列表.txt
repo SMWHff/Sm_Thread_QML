@@ -1,0 +1,40 @@
+//公共资源列表【多线程里要记得加锁】
+用 DimEnv 或者 Global 定义的变量
+Import 命令
+PutAttachment 命令
+TracePrint 命令
+SayString 命令
+
+'对同一个文件进行操作的命令 
+Plugin.File 
+Plugin.Office
+
+'前台键盘命令 
+KeyPress 
+KeyDown 
+KeyUp 
+GetLastKey
+WaitKey 
+
+'前台鼠标命令 
+MoveTo 
+MoveR 
+LeftClick 
+LeftDown 
+LeftUp 
+RightClick 
+RightDown 
+RightUp 
+MiddleClick 
+MouseWheel 
+SaveMousePos 
+RestoreMousePos 
+LockMouse 
+UnlockMouse 
+WaitClick 
+GetLastClick 
+
+
+'所有对QUI控件的操作命令 
+Form1.Caption 
+...
